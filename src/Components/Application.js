@@ -8,19 +8,76 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
-import Rooms from "./Rooms";
-import Chat from "./Chat";
+import Badge from "@material-ui/core/Badge";
+import Avatar from "@material-ui/core/Avatar";
 import { Grid } from "@material-ui/core";
+import { deepPurple } from "@material-ui/core/colors";
+import Rooms from "./Rooms";
 
 const drawerWidth = 230;
+
+const StyledBadge = withStyles((theme) => ({
+  badge: {
+    backgroundColor: "#44b700",
+    color: "#44b700",
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    "&::after": {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      animation: "$ripple 1.2s infinite ease-in-out",
+      border: "1px solid currentColor",
+      content: '""',
+    },
+  },
+  "@keyframes ripple": {
+    "0%": {
+      transform: "scale(.8)",
+      opacity: 1,
+    },
+    "100%": {
+      transform: "scale(2.4)",
+      opacity: 0,
+    },
+  },
+}))(Badge);
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+  },
+  avatarGrid: {
+    padding: "10px",
+  },
+  avatarIcon: {
+    display: "flex",
+    paddingLeft: "10px",
+    paddingRight: "10px",
+  },
+  avatarName: {
+    marginBlockStart: 0,
+    marginBlockEnd: 0,
+    fontSize: "1.2em",
+    fontWeight: "600",
+    paddingLeft: "12px",
+    paddingTop: "5px",
+  },
+  avatarDisplayName: {
+    marginBlockStart: 0,
+    marginBlockEnd: 0,
+    alignSelf: "center",
+    paddingLeft: "20px",
+  },
+  purple: {
+    color: theme.palette.getContrastText(deepPurple[500]),
+    backgroundColor: deepPurple[500],
   },
   drawer: {
     [theme.breakpoints.up("sm")]: {
@@ -44,9 +101,6 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
   },
   sideToolBar: {
     backgroundColor: "#3f51b5",
@@ -88,9 +142,27 @@ function Application(props) {
     <div>
       <Toolbar className={classes.sideToolBar}>CHATIFY</Toolbar>
       <Divider />
-      <Grid>
-        <h3>SB</h3>
-        <h4>Dp</h4>
+      <Grid className={classes.avatarGrid}>
+        <div className={classes.avatarIcon}>
+          <StyledBadge
+            overlap="circle"
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "right",
+            }}
+            variant="dot"
+          >
+            <Avatar
+              alt="Sharp"
+              src="/static/images/avatar/1.jpg"
+              className={classes.purple}
+            />
+          </StyledBadge>
+          <p className={classes.avatarDisplayName}>Asdsds</p>
+        </div>
+        <div>
+          <p className={classes.avatarName}> Soumyajit Behera</p>
+        </div>
       </Grid>
       <Divider />
       <Rooms />
@@ -182,11 +254,6 @@ function Application(props) {
           </Drawer>
         </Hidden>
       </nav>
-
-      <main className={classes.content}>
-        <div className={classes.toolbar} style={{ minHeight: "50px" }} />
-        <Chat />
-      </main>
     </div>
   );
 }

@@ -13,6 +13,7 @@ import Divider from "@material-ui/core/Divider";
 import LabelImportantIcon from "@material-ui/icons/LabelImportant";
 import AddIcon from "@material-ui/icons/Add";
 import { db } from "../Firebase/Firebase";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   nested: {
@@ -23,8 +24,10 @@ const useStyles = makeStyles((theme) => ({
 function Rooms() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const [channelList, setChannelList] = useState([]);
+  const history = useHistory();
+  const routeMatch = useRouteMatch("/channel/:id");
 
   useEffect(() => {
     db.collection("channels")
@@ -37,15 +40,19 @@ function Rooms() {
           }))
         );
       });
-  }, []);
+
+    if (routeMatch) {
+      setSelectedIndex(routeMatch.params.id);
+    }
+  }, [routeMatch]);
 
   const handleClick = () => {
     setOpen(!open);
   };
 
-  const goToChannel = (index, id) => {
-    setSelectedIndex(index);
-    console.log(id);
+  const goToChannel = (id) => {
+    setSelectedIndex(id);
+    history.push(`/channel/${id}`);
   };
 
   const addChannel = () => {
@@ -63,43 +70,44 @@ function Rooms() {
   };
 
   return (
-    <List component="nav" aria-labelledby="nested-list-subheader">
+    <div>
       <ListItem style={{ paddingTop: 0, paddingBottom: 0 }}>
         <ListItemText primary="Add Channel" />
         <IconButton edge="end" aria-label="add" onClick={addChannel}>
           <AddIcon />
         </IconButton>
       </ListItem>
-
       <Divider />
 
-      <ListItem button onClick={handleClick}>
-        <ListItemIcon>
-          <CommentIcon />
-        </ListItemIcon>
-        <ListItemText primary="Channels" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
+      <List component="nav" aria-labelledby="nested-list-subheader">
+        <ListItem button onClick={handleClick}>
+          <ListItemIcon>
+            <CommentIcon />
+          </ListItemIcon>
+          <ListItemText primary="Channels" />
+          {open ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
 
-      <Collapse in={open} timeout="auto">
-        <List component="div" disablePadding>
-          {channelList.map((channel, index) => (
-            <ListItem
-              key={channel.id}
-              button
-              className={classes.nested}
-              selected={selectedIndex === index}
-              onClick={() => goToChannel(index, channel.id)}
-            >
-              <ListItemIcon>
-                <LabelImportantIcon />
-              </ListItemIcon>
-              <ListItemText primary={channel.channelName} />
-            </ListItem>
-          ))}
-        </List>
-      </Collapse>
-    </List>
+        <Collapse in={open} timeout="auto">
+          <List component="div" disablePadding>
+            {channelList.map((channel, index) => (
+              <ListItem
+                key={channel.id}
+                button
+                className={classes.nested}
+                selected={selectedIndex === channel.id}
+                onClick={() => goToChannel(channel.id)}
+              >
+                <ListItemIcon>
+                  <LabelImportantIcon />
+                </ListItemIcon>
+                <ListItemText primary={channel.channelName} />
+              </ListItem>
+            ))}
+          </List>
+        </Collapse>
+      </List>
+    </div>
   );
 }
 

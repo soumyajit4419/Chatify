@@ -2,6 +2,7 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+// import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -10,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   chat: {
     position: "relative",
     overflowY: "scroll",
-    height: "calc(100vh - 185px)",
+    height: "calc(100vh - 175px)",
     paddingLeft: "25px",
     paddingBottom: "10px",
     paddingTop: "5px",
@@ -37,6 +38,8 @@ const useStyles = makeStyles((theme) => ({
 
 function Chat() {
   const classes = useStyles();
+  // const params = useParams();
+
   const list = [];
   for (var i = 1; i <= 100; i++) {
     list.push("hello");

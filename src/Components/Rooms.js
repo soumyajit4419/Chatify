@@ -72,9 +72,9 @@ function Rooms() {
   return (
     <div>
       <ListItem style={{ paddingTop: 0, paddingBottom: 0 }}>
-        <ListItemText primary="Add Channel" />
+        <ListItemText primary="Create New Channel" />
         <IconButton edge="end" aria-label="add" onClick={addChannel}>
-          <AddIcon />
+          <AddIcon color="primary" />
         </IconButton>
       </ListItem>
       <Divider />
@@ -82,10 +82,14 @@ function Rooms() {
       <List component="nav" aria-labelledby="nested-list-subheader">
         <ListItem button onClick={handleClick}>
           <ListItemIcon>
-            <CommentIcon />
+            <CommentIcon color="primary" />
           </ListItemIcon>
           <ListItemText primary="Channels" />
-          {open ? <ExpandLess /> : <ExpandMore />}
+          {open ? (
+            <ExpandLess color="primary" />
+          ) : (
+            <ExpandMore color="primary" />
+          )}
         </ListItem>
 
         <Collapse in={open} timeout="auto">
@@ -99,7 +103,7 @@ function Rooms() {
                 onClick={() => goToChannel(channel.id)}
               >
                 <ListItemIcon>
-                  <LabelImportantIcon />
+                  <LabelImportantIcon color="primary" />
                 </ListItemIcon>
                 <ListItemText primary={channel.channelName} />
               </ListItem>

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Application from "./Components/Application";
 import Chat from "./Components/Chat";
 import Login from "./Components/SignUp";
+import Home from "./Components/Home";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { auth } from "./Firebase/Firebase";
 import "./App.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +20,25 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  const [user, setUser] = useState(true);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        const uName = user.displayName.split(" ")[0];
+        const details = {
+          name: user.displayName,
+          displayName: uName,
+          photoURL: user.photoURL,
+          email: user.email,
+        };
+        localStorage.setItem("userDetails", JSON.stringify(details));
+        setUser(user.refreshToken);
+      } else {
+        setUser(null);
+      }
+    });
+  }, []);
 
   return (
     <div className="App">
@@ -32,7 +52,7 @@ function App() {
               <div className={classes.toolbar} style={{ minHeight: "50px" }} />
               <Switch>
                 <Route path="/" exact>
-                  <h3>welcome</h3>
+                  <Home />
                 </Route>
                 <Route path="/channel/:id">
                   <Chat />

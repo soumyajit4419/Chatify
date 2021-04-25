@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
@@ -17,8 +17,10 @@ import Avatar from "@material-ui/core/Avatar";
 import { Grid } from "@material-ui/core";
 import { deepPurple } from "@material-ui/core/colors";
 import Rooms from "./Rooms";
+import { GoSignOut } from "react-icons/go";
+import { auth } from "../Firebase/Firebase";
 
-const drawerWidth = 230;
+const drawerWidth = 240;
 
 const StyledBadge = withStyles((theme) => ({
   badge: {
@@ -54,7 +56,9 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   avatarGrid: {
-    padding: "10px",
+    paddingTop: "20px",
+    paddingLeft: "5px",
+    paddingBottom: "20px",
   },
   avatarIcon: {
     display: "flex",
@@ -62,22 +66,18 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: "10px",
   },
   avatarName: {
-    marginBlockStart: 0,
-    marginBlockEnd: 0,
-    fontSize: "1.2em",
-    fontWeight: "600",
+    fontSize: "1em",
     paddingLeft: "12px",
-    paddingTop: "5px",
+    paddingTop: "8px",
   },
   avatarDisplayName: {
-    marginBlockStart: 0,
-    marginBlockEnd: 0,
     alignSelf: "center",
-    paddingLeft: "20px",
+    paddingLeft: "10px",
+    fontWeight: "600",
   },
   purple: {
     color: theme.palette.getContrastText(deepPurple[500]),
-    backgroundColor: deepPurple[500],
+    backgroundColor: "#3f51b5",
   },
   drawer: {
     [theme.breakpoints.up("sm")]: {
@@ -105,13 +105,14 @@ const useStyles = makeStyles((theme) => ({
   sideToolBar: {
     backgroundColor: "#3f51b5",
     color: "#fff",
-    fontSize: "1.25rem",
     lineHeight: 1.6,
-    letterSpacing: "0.2em",
     boxShadow:
       "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
-    fontWeight: "900",
     minHeight: "50px",
+  },
+  sideToolBarText: {
+    letterSpacing: "0.2em",
+    fontWeight: "900",
   },
   title: {
     flexGrow: 1,
@@ -124,7 +125,15 @@ function Application(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [userDetails, setUserDetails] = useState([]);
   const open = Boolean(anchorEl);
+
+  useEffect(() => {
+    const details = JSON.parse(localStorage.getItem("userDetails"));
+    if (details) {
+      setUserDetails(details);
+    }
+  }, []);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -138,9 +147,25 @@ function Application(props) {
     setMobileOpen(!mobileOpen);
   };
 
+  const signOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        console.log("signed out");
+        localStorage.clear();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const drawer = (
     <div>
-      <Toolbar className={classes.sideToolBar}>CHATIFY</Toolbar>
+      <Toolbar className={classes.sideToolBar}>
+        <Typography variant="h6" className={classes.sideToolBarText}>
+          CHATIFY
+        </Typography>
+      </Toolbar>
       <Divider />
       <Grid className={classes.avatarGrid}>
         <div className={classes.avatarIcon}>
@@ -153,15 +178,22 @@ function Application(props) {
             variant="dot"
           >
             <Avatar
-              alt="Sharp"
-              src="/static/images/avatar/1.jpg"
+              alt={userDetails.name}
+              src={userDetails.photoURL}
               className={classes.purple}
             />
           </StyledBadge>
-          <p className={classes.avatarDisplayName}>Asdsds</p>
+          <Typography variant="h6" className={classes.avatarDisplayName}>
+            {userDetails.displayName}
+          </Typography>
         </div>
         <div>
-          <p className={classes.avatarName}> Soumyajit Behera</p>
+          <Typography variant="h4" className={classes.avatarName}>
+            {userDetails.name}
+          </Typography>
+          <Typography variant="h4" className={classes.avatarName}>
+            {userDetails.email}
+          </Typography>
         </div>
       </Grid>
       <Divider />
@@ -188,7 +220,7 @@ function Application(props) {
           </IconButton>
 
           <Typography variant="h6" className={classes.title}>
-            Photos
+            Home
           </Typography>
 
           <div>
@@ -204,19 +236,23 @@ function Application(props) {
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
+              getContentAnchorEl={null}
               anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
+                vertical: "bottom",
+                horizontal: "center",
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right",
+                horizontal: "center",
               }}
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Log Out</MenuItem>
+              <MenuItem onClick={signOut}>
+                {" "}
+                <GoSignOut /> &nbsp; Sign Out of Chatify
+              </MenuItem>
             </Menu>
           </div>
         </Toolbar>

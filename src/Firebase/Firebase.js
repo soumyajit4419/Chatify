@@ -2,6 +2,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 
+const provider = new firebase.auth.GoogleAuthProvider();
+
 const firebaseConfig = {
   apiKey: "AIzaSyDoN-nSGUo_1h87nkOXSXX2vv4IBXBXey0",
   authDomain: "chatify-49.firebaseapp.com",
@@ -17,4 +19,4 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
 const auth = firebase.auth();
 
-export { db, auth };
+export { db, auth, provider };

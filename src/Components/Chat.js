@@ -3,11 +3,13 @@ import TextField from "@material-ui/core/TextField";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Messages from "./Messages";
-import SendIcon from "@material-ui/icons/Send";
 import IconButton from "@material-ui/core/IconButton";
 import { useParams } from "react-router-dom";
 import { db } from "../Firebase/Firebase";
 import firebase from "firebase/app";
+import ScrollableFeed from "react-scrollable-feed";
+import { BiHash } from "react-icons/bi";
+import { FiSend } from "react-icons/fi";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
   },
   chat: {
     position: "relative",
-    overflowY: "scroll",
     height: "calc(100vh - 175px)",
     paddingLeft: "10px",
     paddingBottom: "5px",
@@ -24,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   footer: {
     display: "flex",
     paddingRight: "10px",
-    paddingLeft: "25px",
+    paddingLeft: "20px",
     paddingTop: "5px",
   },
   message: {
@@ -35,10 +36,15 @@ const useStyles = makeStyles((theme) => ({
     borderLeft: 0,
     borderRight: 0,
     padding: "15px",
+    display: "flex",
   },
   roomNameText: {
     marginBlockEnd: 0,
     marginBlockStart: 0,
+    paddingLeft: "5px",
+  },
+  iconDesign: {
+    fontSize: "1.5em",
   },
 }));
 
@@ -98,12 +104,15 @@ function Chat() {
   return (
     <div className={classes.root}>
       <Grid item xs={12} className={classes.roomName}>
+        <BiHash className={classes.iconDesign} />
         <h3 className={classes.roomNameText}>{channelName}</h3>
       </Grid>
       <Grid item xs={12} className={classes.chat}>
-        {allMessages.map((message) => (
-          <Messages key={message.id} values={message.data} />
-        ))}
+        <ScrollableFeed>
+          {allMessages.map((message) => (
+            <Messages key={message.id} values={message.data} />
+          ))}
+        </ScrollableFeed>
       </Grid>
 
       <Grid item xs={12} className={classes.footer}>
@@ -124,7 +133,7 @@ function Chat() {
             }}
           />
           <IconButton type="submit" color="primary" component="button">
-            <SendIcon />
+            <FiSend />
           </IconButton>
         </form>
       </Grid>

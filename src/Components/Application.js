@@ -19,6 +19,7 @@ import { deepPurple } from "@material-ui/core/colors";
 import Rooms from "./Rooms";
 import { GoSignOut } from "react-icons/go";
 import { auth } from "../Firebase/Firebase";
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -220,7 +221,9 @@ function Application(props) {
           </IconButton>
 
           <Typography variant="h6" className={classes.title}>
-            Home
+            <Link to="/" style={{ textDecoration: "none", color: "white" }}>
+              Home
+            </Link>
           </Typography>
 
           <div>

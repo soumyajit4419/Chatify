@@ -5,29 +5,31 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import Collapse from "@material-ui/core/Collapse";
-import CommentIcon from "@material-ui/icons/Comment";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import IconButton from "@material-ui/core/IconButton";
 import Divider from "@material-ui/core/Divider";
-import LabelImportantIcon from "@material-ui/icons/LabelImportant";
 import AddIcon from "@material-ui/icons/Add";
 import { db } from "../Firebase/Firebase";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { IoMdChatboxes } from "react-icons/io";
+import { BiHash } from "react-icons/bi";
 
 const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
+  },
+  iconDesign: {
+    fontSize: "1.5em",
+    color: "#3f51b5",
   },
 }));
 
 function Rooms() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const [selectedIndex, setSelectedIndex] = React.useState(-1);
   const [channelList, setChannelList] = useState([]);
   const history = useHistory();
-  const routeMatch = useRouteMatch("/channel/:id");
 
   useEffect(() => {
     db.collection("channels")
@@ -40,28 +42,25 @@ function Rooms() {
           }))
         );
       });
-
-    if (routeMatch) {
-      setSelectedIndex(routeMatch.params.id);
-    }
-  }, [routeMatch]);
+  }, []);
 
   const handleClick = () => {
     setOpen(!open);
   };
 
   const goToChannel = (id) => {
-    setSelectedIndex(id);
     history.push(`/channel/${id}`);
   };
 
   const addChannel = () => {
-    let cName = prompt("Enter Channel Name");
+    let cName = prompt("Enter New Channel Name");
     if (cName) {
       cName = cName.toUpperCase();
       for (var i = 0; i < channelList.length; i++) {
         if (cName === channelList[i].channelName) {
-          alert("Name Already Exits, Please Enter A valid Name");
+          alert(
+            "Entered Channel Name Already Exits!! \n Please Enter A valid Name.."
+          );
           return;
         }
       }
@@ -82,7 +81,7 @@ function Rooms() {
       <List component="nav" aria-labelledby="nested-list-subheader">
         <ListItem button onClick={handleClick}>
           <ListItemIcon>
-            <CommentIcon color="primary" />
+            <IoMdChatboxes className={classes.iconDesign} />
           </ListItemIcon>
           <ListItemText primary="Channels" />
           {open ? (
@@ -94,16 +93,15 @@ function Rooms() {
 
         <Collapse in={open} timeout="auto">
           <List component="div" disablePadding>
-            {channelList.map((channel, index) => (
+            {channelList.map((channel) => (
               <ListItem
                 key={channel.id}
                 button
                 className={classes.nested}
-                selected={selectedIndex === channel.id}
                 onClick={() => goToChannel(channel.id)}
               >
                 <ListItemIcon>
-                  <LabelImportantIcon color="primary" />
+                  <BiHash className={classes.iconDesign} />
                 </ListItemIcon>
                 <ListItemText primary={channel.channelName} />
               </ListItem>

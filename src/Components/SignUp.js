@@ -37,7 +37,7 @@ function SignUp() {
       .then((res) => {
         console.log("Success");
       })
-      .then((err) => {
+      .catch((err) => {
         console.log(err);
       });
   };

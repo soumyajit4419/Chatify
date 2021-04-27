@@ -55,7 +55,7 @@ function Rooms() {
   const addChannel = () => {
     let cName = prompt("Enter New Channel Name");
     if (cName) {
-      cName = cName.toUpperCase();
+      cName = cName.toLowerCase();
       for (var i = 0; i < channelList.length; i++) {
         if (cName === channelList[i].channelName) {
           alert(
@@ -64,7 +64,7 @@ function Rooms() {
           return;
         }
       }
-      db.collection("channels").add({ channelName: cName.toUpperCase() });
+      db.collection("channels").add({ channelName: cName.toLowerCase() });
     }
   };
 
@@ -83,7 +83,7 @@ function Rooms() {
           <ListItemIcon>
             <IoMdChatboxes className={classes.iconDesign} />
           </ListItemIcon>
-          <ListItemText primary="Channels" />
+          <ListItemText primary="CHANNELS" />
           {open ? (
             <ExpandLess color="primary" />
           ) : (
@@ -100,7 +100,7 @@ function Rooms() {
                 className={classes.nested}
                 onClick={() => goToChannel(channel.id)}
               >
-                <ListItemIcon>
+                <ListItemIcon style={{ minWidth: "30px" }}>
                   <BiHash className={classes.iconDesign} />
                 </ListItemIcon>
                 <ListItemText primary={channel.channelName} />

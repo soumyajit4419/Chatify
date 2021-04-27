@@ -10,7 +10,6 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: "12px",
-    color: theme.palette.text.secondary,
   },
   avatar: {
     display: "inline-block",
@@ -40,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Messages({ values }) {
+function Messages({ values, id }) {
   const classes = useStyles();
   const date = values.timestamp.toDate();
 

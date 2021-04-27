@@ -31,6 +31,7 @@ function App() {
           displayName: uName,
           photoURL: user.photoURL,
           email: user.email,
+          uid: user.uid,
         };
         localStorage.setItem("userDetails", JSON.stringify(details));
         setUser(user.refreshToken);

@@ -10,6 +10,9 @@ import firebase from "firebase/app";
 import ScrollableFeed from "react-scrollable-feed";
 import { BiHash } from "react-icons/bi";
 import { FiSend } from "react-icons/fi";
+import { GrEmoji } from "react-icons/gr";
+import { Picker } from "emoji-mart";
+import "emoji-mart/css/emoji-mart.css";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   footer: {
     display: "flex",
     paddingRight: "10px",
-    paddingLeft: "20px",
+    paddingLeft: "5px",
     paddingTop: "5px",
   },
   message: {
@@ -54,6 +57,7 @@ function Chat() {
   const [allMessages, setAllMessages] = useState([]);
   const [channelName, setChannelName] = useState("");
   const [userNewMsg, setUserNewMsg] = useState("");
+  const [emojiBtn, setEmojiBtn] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -83,12 +87,14 @@ function Chat() {
       if (userData) {
         const displayName = userData.displayName;
         const imgUrl = userData.photoURL;
+        const uid = userData.uid;
 
         const obj = {
           text: userNewMsg,
           timestamp: firebase.firestore.Timestamp.now(),
           userImg: imgUrl,
           userName: displayName,
+          uid: uid,
         };
 
         db.collection("channels")
@@ -98,7 +104,12 @@ function Chat() {
       }
 
       setUserNewMsg("");
+      setEmojiBtn(false);
     }
+  };
+
+  const addEmoji = (e) => {
+    setUserNewMsg(userNewMsg + e.native);
   };
 
   return (
@@ -110,12 +121,21 @@ function Chat() {
       <Grid item xs={12} className={classes.chat}>
         <ScrollableFeed>
           {allMessages.map((message) => (
-            <Messages key={message.id} values={message.data} />
+            <Messages key={message.id} values={message.data} id={message.id} />
           ))}
         </ScrollableFeed>
       </Grid>
 
       <Grid item xs={12} className={classes.footer}>
+        <IconButton
+          color="primary"
+          component="button"
+          onClick={() => setEmojiBtn(!emojiBtn)}
+        >
+          <GrEmoji />
+        </IconButton>
+        {emojiBtn ? <Picker onSelect={addEmoji} /> : null}
+
         <form
           autoComplete="off"
           style={{ width: "100%", display: "flex" }}

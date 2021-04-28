@@ -20,26 +20,27 @@ const useStyles = makeStyles((theme) => ({
   },
   chat: {
     position: "relative",
-    height: "calc(100vh - 175px)",
+    height: "calc(100vh - 180px)",
     paddingLeft: "10px",
     paddingBottom: "5px",
     paddingTop: "5px",
   },
   footer: {
-    display: "flex",
-    paddingRight: "10px",
-    paddingLeft: "5px",
+    paddingRight: "15px",
+    paddingLeft: "15px",
     paddingTop: "5px",
   },
   message: {
     width: "100%",
+    color: "white",
   },
   roomName: {
-    border: "1px solid #0000002b",
+    border: "1px solid #0000004a",
     borderLeft: 0,
     borderRight: 0,
     padding: "15px",
     display: "flex",
+    color: "#e5e5e5",
   },
   roomNameText: {
     marginBlockEnd: 0,
@@ -48,6 +49,12 @@ const useStyles = makeStyles((theme) => ({
   },
   iconDesign: {
     fontSize: "1.5em",
+    color: "#e5e5e5",
+  },
+  footerContent: {
+    display: "flex",
+    backgroundColor: "#40444b",
+    borderRadius: "5px",
   },
 }));
 
@@ -88,13 +95,16 @@ function Chat() {
         const displayName = userData.displayName;
         const imgUrl = userData.photoURL;
         const uid = userData.uid;
-
+        const likeCount = 0;
+        const likes = {};
         const obj = {
           text: userNewMsg,
           timestamp: firebase.firestore.Timestamp.now(),
           userImg: imgUrl,
           userName: displayName,
           uid: uid,
+          likeCount: likeCount,
+          likes: likes,
         };
 
         db.collection("channels")
@@ -125,38 +135,39 @@ function Chat() {
           ))}
         </ScrollableFeed>
       </Grid>
-
-      <Grid item xs={12} className={classes.footer}>
-        <IconButton
-          color="primary"
-          component="button"
-          onClick={() => setEmojiBtn(!emojiBtn)}
-        >
-          <GrEmoji />
-        </IconButton>
-        {emojiBtn ? <Picker onSelect={addEmoji} /> : null}
-
-        <form
-          autoComplete="off"
-          style={{ width: "100%", display: "flex" }}
-          onSubmit={(e) => sendMsg(e)}
-        >
-          <TextField
-            className={classes.message}
-            required
-            id="outlined-basic"
-            label="Enter Message"
-            variant="outlined"
-            value={userNewMsg}
-            onChange={(e) => {
-              setUserNewMsg(e.target.value);
-            }}
-          />
-          <IconButton type="submit" color="primary" component="button">
-            <FiSend />
+      <div className={classes.footer}>
+        <Grid item xs={12} className={classes.footerContent}>
+          <IconButton
+            color="primary"
+            component="button"
+            onClick={() => setEmojiBtn(!emojiBtn)}
+          >
+            <GrEmoji style={{ color: "#b9bbbe" }} />
           </IconButton>
-        </form>
-      </Grid>
+          {emojiBtn ? <Picker onSelect={addEmoji} theme="dark" /> : null}
+
+          <form
+            autoComplete="off"
+            style={{ width: "100%", display: "flex" }}
+            onSubmit={(e) => sendMsg(e)}
+          >
+            <TextField
+              className={classes.message}
+              required
+              id="outlined-basic"
+              label="Enter Message"
+              variant="outlined"
+              value={userNewMsg}
+              onChange={(e) => {
+                setUserNewMsg(e.target.value);
+              }}
+            />
+            <IconButton type="submit" component="button">
+              <FiSend style={{ color: "#b9bbbe" }} />
+            </IconButton>
+          </form>
+        </Grid>
+      </div>
     </div>
   );
 }

@@ -15,6 +15,8 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
+    backgroundColor: "#36393f",
+    height: "100vh",
   },
 }));
 

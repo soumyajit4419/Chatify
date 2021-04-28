@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "20px",
     paddingLeft: "5px",
     paddingBottom: "20px",
+    color: "#dcddde",
   },
   avatarIcon: {
     display: "flex",
@@ -91,6 +92,10 @@ const useStyles = makeStyles((theme) => ({
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
+    backgroundColor: "#36393f",
+    color: "#dcddde",
+    boxShadow:
+      "0 1px 0 rgba(4,4,5,0.2),0 1.5px 0 rgba(6,6,7,0.05),0 2px 0 rgba(4,4,5,0.05);",
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -102,13 +107,15 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
+    backgroundColor: "#2f3136",
+    color: "white",
   },
   sideToolBar: {
-    backgroundColor: "#3f51b5",
+    backgroundColor: "#2f3136",
     color: "#fff",
     lineHeight: 1.6,
     boxShadow:
-      "0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%)",
+      "0 1px 0 rgba(4,4,5,0.2),0 1.5px 0 rgba(6,6,7,0.05),0 2px 0 rgba(4,4,5,0.05);",
     minHeight: "50px",
   },
   sideToolBarText: {
@@ -221,7 +228,7 @@ function Application(props) {
           </IconButton>
 
           <Typography variant="h6" className={classes.title}>
-            <Link to="/" style={{ textDecoration: "none", color: "white" }}>
+            <Link to="/" style={{ textDecoration: "none", color: "#dcddde" }}>
               Home
             </Link>
           </Typography>

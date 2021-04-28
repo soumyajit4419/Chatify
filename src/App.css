@@ -1,6 +1,7 @@
 body {
   height: 100vh !important;
   overflow: hidden !important;
+  background-color: rgb(42 42 42) !important;
 }
 
 /* width */
@@ -10,18 +11,14 @@ body {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: #2e3338 !important;
+  border-radius: 5px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgb(209, 209, 209);
+  background: #202225 !important;
   border-radius: 5px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(194, 194, 194, 0.945);
 }
 
 .emoji-mart {
@@ -31,4 +28,16 @@ body {
 
 .emoji-mart-preview {
   display: none !important;
+}
+
+.MuiInputLabel-outlined {
+  color: rgba(133, 133, 133, 0.89) !important;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border: 0 !important;
+}
+
+.MuiInputBase-root {
+  color: rgb(245, 245, 245) !important;
 }

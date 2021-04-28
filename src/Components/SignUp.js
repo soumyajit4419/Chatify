@@ -9,7 +9,9 @@ import { auth, provider } from "../Firebase/Firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    boxShadow: "0 0 28px rgb(0 0 0 / 14%)",
+    backgroundColor: "#23272a",
+    boxShadow: "0 0 15px rgb(0 0 0 / 58%)",
+    color: "white",
   },
   paper: {
     marginTop: theme.spacing(10),
@@ -17,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     paddingBottom: "25px",
-    paddingTop: "25px",
+    paddingTop: "35px",
   },
   mainImg: {
     width: "100%",
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    color: "#d9d9d9",
   },
 }));
 

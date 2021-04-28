@@ -6,11 +6,11 @@ import Typography from "@material-ui/core/Typography";
 const useStyles = makeStyles((theme) => ({
   root: {
     paddingTop: "50px",
+    color: "#f0f0f0",
   },
   heading: {
     fontSize: "2.2em",
     fontWeight: "700",
-    color: "#3f51b5",
   },
   subHeading: {
     fontSize: "1.6em",

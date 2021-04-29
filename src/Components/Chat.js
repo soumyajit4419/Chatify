@@ -97,6 +97,10 @@ function Chat() {
         const uid = userData.uid;
         const likeCount = 0;
         const likes = {};
+        const fireCount = 0;
+        const fire = {};
+        const heartCount = 0;
+        const heart = {};
         const obj = {
           text: userNewMsg,
           timestamp: firebase.firestore.Timestamp.now(),
@@ -105,6 +109,10 @@ function Chat() {
           uid: uid,
           likeCount: likeCount,
           likes: likes,
+          fireCount: fireCount,
+          fire: fire,
+          heartCount: heartCount,
+          heart: heart,
         };
 
         db.collection("channels")
@@ -131,7 +139,11 @@ function Chat() {
       <Grid item xs={12} className={classes.chat}>
         <ScrollableFeed>
           {allMessages.map((message) => (
-            <Messages key={message.id} values={message.data} id={message.id} />
+            <Messages
+              key={message.id}
+              values={message.data}
+              msgId={message.id}
+            />
           ))}
         </ScrollableFeed>
       </Grid>

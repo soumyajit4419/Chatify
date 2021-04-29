@@ -7,6 +7,8 @@ import IconButton from "@material-ui/core/IconButton";
 import { AiFillLike } from "react-icons/ai";
 import { AiFillFire } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
+import { db } from "../Firebase/Firebase";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "0 35px 0 32px",
   },
   emojiBtn: {
-    fontSize: "1rem",
+    fontSize: "1.1rem",
     color: "rgb(255 195 54)",
   },
   allEmoji: {
@@ -72,33 +74,237 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: "2px",
     display: "flex",
   },
+  countEmojiBtn: {
+    padding: "3px",
+    borderRadius: "4px",
+    fontSize: "0.8em",
+    backgroundColor: "#ffffff4a",
+    color: "#cacaca",
+    paddingLeft: "5px",
+    paddingRight: "5px",
+    "&:hover": {
+      backgroundColor: "#ffffff4a",
+      color: "#e7e7e7",
+    },
+  },
 }));
 
-function Messages({ values, id }) {
-  // console.log(values.likes["dfdffdfdf"]);
+function Messages({ values, msgId }) {
+  const [style, setStyle] = useState({ display: "block" });
   const classes = useStyles();
-  const date = values.timestamp.toDate();
 
+  const uid = JSON.parse(localStorage.getItem("userDetails")).uid;
+  const date = values.timestamp.toDate();
   const day = date.getDate();
   const year = date.getFullYear();
   const month = date.getMonth();
-
   const hour = date.getHours();
   const minute = date.getMinutes();
   const time = `${day}/${month}/${year}   ${hour}:${minute}`;
 
-  const [style, setStyle] = useState({ display: "none" });
+  const numLikes = values.likeCount;
+  const numFire = values.fireCount;
+  const numHeart = values.heartCount;
+
+  const userLiked = values.likes[uid];
+  const userFire = values.fire[uid];
+  const userHeart = values.heart[uid];
+
+  const selectedLike = userLiked
+    ? { color: "#8ff879", backgroundColor: "#545454" }
+    : null;
+
+  const selectedHeart = userHeart
+    ? { color: "#ff527d", backgroundColor: "#545454" }
+    : null;
+
+  const selectedFire = userFire
+    ? { color: "#ffc336", backgroundColor: "#545454" }
+    : null;
+
+  const channelId = useParams().id;
 
   const heartClick = () => {
-    console.log(`clicked heart on msg ${id}`);
+    const messageDoc = db
+      .collection("channels")
+      .doc(channelId)
+      .collection("messages")
+      .doc(msgId);
+    if (userHeart) {
+      return db
+        .runTransaction((transaction) => {
+          // This code may get re-run multiple times if there are conflicts.
+          return transaction.get(messageDoc).then((doc) => {
+            if (!doc) {
+              console.log("doc not found");
+              return;
+            }
+
+            let newHeartCount = doc.data().heartCount - 1;
+            let newHeart = doc.data().heart ? doc.data().heart : {};
+            newHeart[uid] = false;
+
+            transaction.update(messageDoc, {
+              heartCount: newHeartCount,
+              heart: newHeart,
+            });
+          });
+        })
+        .then(() => {
+          console.log("Disiked");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      return db
+        .runTransaction((transaction) => {
+          // This code may get re-run multiple times if there are conflicts.
+          return transaction.get(messageDoc).then((doc) => {
+            if (!doc) {
+              console.log("doc not found");
+              return;
+            }
+
+            let newHeartCount = doc.data().heartCount + 1;
+            let newHeart = doc.data().heart ? doc.data().heart : {};
+            newHeart[uid] = true;
+
+            transaction.update(messageDoc, {
+              heartCount: newHeartCount,
+              heart: newHeart,
+            });
+          });
+        })
+        .then(() => {
+          console.log("Liked");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const fireClick = () => {
-    console.log(`clicked fire on msg ${id}`);
+    const messageDoc = db
+      .collection("channels")
+      .doc(channelId)
+      .collection("messages")
+      .doc(msgId);
+    if (userFire) {
+      return db
+        .runTransaction((transaction) => {
+          // This code may get re-run multiple times if there are conflicts.
+          return transaction.get(messageDoc).then((doc) => {
+            if (!doc) {
+              console.log("doc not found");
+              return;
+            }
+
+            let newFireCount = doc.data().fireCount - 1;
+            let newFire = doc.data().fire ? doc.data().fire : {};
+            newFire[uid] = false;
+
+            transaction.update(messageDoc, {
+              fireCount: newFireCount,
+              fire: newFire,
+            });
+          });
+        })
+        .then(() => {
+          console.log("Disiked");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      return db
+        .runTransaction((transaction) => {
+          // This code may get re-run multiple times if there are conflicts.
+          return transaction.get(messageDoc).then((doc) => {
+            if (!doc) {
+              console.log("doc not found");
+              return;
+            }
+
+            let newFireCount = doc.data().fireCount + 1;
+            let newFire = doc.data().fire ? doc.data().fire : {};
+            newFire[uid] = true;
+
+            transaction.update(messageDoc, {
+              fireCount: newFireCount,
+              fire: newFire,
+            });
+          });
+        })
+        .then(() => {
+          console.log("Liked");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const likeClick = () => {
-    console.log(`clicked like on msg ${id}`);
+    const messageDoc = db
+      .collection("channels")
+      .doc(channelId)
+      .collection("messages")
+      .doc(msgId);
+    if (userLiked) {
+      return db
+        .runTransaction((transaction) => {
+          // This code may get re-run multiple times if there are conflicts.
+          return transaction.get(messageDoc).then((doc) => {
+            if (!doc) {
+              console.log("doc not found");
+              return;
+            }
+
+            let newLikeCount = doc.data().likeCount - 1;
+            let newLikes = doc.data().likes ? doc.data().likes : {};
+            newLikes[uid] = false;
+
+            transaction.update(messageDoc, {
+              likeCount: newLikeCount,
+              likes: newLikes,
+            });
+          });
+        })
+        .then(() => {
+          console.log("Disiked");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      return db
+        .runTransaction((transaction) => {
+          // This code may get re-run multiple times if there are conflicts.
+          return transaction.get(messageDoc).then((doc) => {
+            if (!doc) {
+              console.log("doc not found");
+              return;
+            }
+
+            let newLikeCount = doc.data().likeCount + 1;
+            let newLikes = doc.data().likes ? doc.data().likes : {};
+            newLikes[uid] = true;
+
+            transaction.update(messageDoc, {
+              likeCount: newLikeCount,
+              likes: newLikes,
+            });
+          });
+        })
+        .then(() => {
+          console.log("Liked");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -119,12 +325,57 @@ function Messages({ values, id }) {
             className={classes.purple}
           />
         </div>
+
         <div className={classes.chat}>
           <div>
             <h6 className={classes.chatHeading}>{values.userName}</h6>
             <p className={classes.chatTimming}>{time}</p>
           </div>
           <div className={classes.chatText}>{values.text}</div>
+
+          <div style={{ paddingTop: "5px", display: "flex" }}>
+            {numLikes > 0 ? (
+              <div style={{ padding: "3px" }}>
+                <IconButton
+                  component="span"
+                  onClick={likeClick}
+                  className={classes.countEmojiBtn}
+                  style={selectedLike}
+                >
+                  <AiFillLike />
+                  <div style={{ paddingLeft: "2px" }}>{numLikes}</div>
+                </IconButton>
+              </div>
+            ) : null}
+
+            {numFire > 0 ? (
+              <div style={{ padding: "3px" }}>
+                <IconButton
+                  component="span"
+                  onClick={fireClick}
+                  className={classes.countEmojiBtn}
+                  style={selectedFire}
+                >
+                  <AiFillFire />
+                  <div style={{ paddingLeft: "2px" }}>{numFire}</div>
+                </IconButton>
+              </div>
+            ) : null}
+
+            {numHeart > 0 ? (
+              <div style={{ padding: "3px" }}>
+                <IconButton
+                  component="span"
+                  onClick={heartClick}
+                  className={classes.countEmojiBtn}
+                  style={selectedHeart}
+                >
+                  <AiFillHeart />
+                  <div style={{ paddingLeft: "2px" }}>{numHeart}</div>
+                </IconButton>
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <div className={classes.emojiDiv} style={style}>
@@ -154,8 +405,6 @@ function Messages({ values, id }) {
             </div>
           </div>
         </div>
-
-        <div>dfdfd</div>
       </div>
     </Grid>
   );

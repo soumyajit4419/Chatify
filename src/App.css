@@ -41,3 +41,7 @@ body {
 .MuiInputBase-root {
   color: rgb(245, 245, 245) !important;
 }
+
+.MuiDivider-root {
+  background-color: rgb(0 0 0 / 40%) !important;
+}

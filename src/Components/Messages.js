@@ -7,6 +7,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { AiFillLike } from "react-icons/ai";
 import { AiFillFire } from "react-icons/ai";
 import { AiFillHeart } from "react-icons/ai";
+import { AiFillDelete } from "react-icons/ai";
 import { db } from "../Firebase/Firebase";
 import { useParams } from "react-router-dom";
 
@@ -94,6 +95,7 @@ function Messages({ values, msgId }) {
   const classes = useStyles();
 
   const uid = JSON.parse(localStorage.getItem("userDetails")).uid;
+  const messegerUid = values.uid;
   const date = values.timestamp.toDate();
   const day = date.getDate();
   const year = date.getFullYear();
@@ -110,6 +112,8 @@ function Messages({ values, msgId }) {
   const userFire = values.fire[uid];
   const userHeart = values.heart[uid];
 
+  const channelId = useParams().id;
+
   const selectedLike = userLiked
     ? { color: "#8ff879", backgroundColor: "#545454" }
     : null;
@@ -121,8 +125,6 @@ function Messages({ values, msgId }) {
   const selectedFire = userFire
     ? { color: "#ffc336", backgroundColor: "#545454" }
     : null;
-
-  const channelId = useParams().id;
 
   const heartClick = () => {
     const messageDoc = db
@@ -307,6 +309,20 @@ function Messages({ values, msgId }) {
     }
   };
 
+  const deleteMsg = (id) => {
+    db.collection("channels")
+      .doc(channelId)
+      .collection("messages")
+      .doc(id)
+      .delete()
+      .then((res) => {
+        console.log("deleted successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <Grid item xs={12} className={classes.root}>
       <div
@@ -402,6 +418,18 @@ function Messages({ values, msgId }) {
               >
                 <AiFillHeart className={classes.emojiBtn} />
               </IconButton>
+              {uid === messegerUid ? (
+                <IconButton
+                  component="span"
+                  style={{ padding: "4px" }}
+                  onClick={() => deleteMsg(msgId)}
+                >
+                  <AiFillDelete
+                    className={classes.emojiBtn}
+                    color="#c3c3c3f0"
+                  />
+                </IconButton>
+              ) : null}
             </div>
           </div>
         </div>

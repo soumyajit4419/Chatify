@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Messages({ values, msgId }) {
-  const [style, setStyle] = useState({ display: "block" });
+  const [style, setStyle] = useState({ display: "none" });
   const classes = useStyles();
 
   const uid = JSON.parse(localStorage.getItem("userDetails")).uid;

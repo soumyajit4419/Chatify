@@ -12,6 +12,8 @@ import { BiHash } from "react-icons/bi";
 import { FiSend } from "react-icons/fi";
 import { GrEmoji } from "react-icons/gr";
 import { Picker } from "emoji-mart";
+import { RiImageAddLine } from "react-icons/ri";
+import FileUpload from "./FileUpload";
 import "emoji-mart/css/emoji-mart.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,6 +58,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#40444b",
     borderRadius: "5px",
   },
+  inputFile: {
+    display: "none",
+  },
 }));
 
 function Chat() {
@@ -65,6 +70,8 @@ function Chat() {
   const [channelName, setChannelName] = useState("");
   const [userNewMsg, setUserNewMsg] = useState("");
   const [emojiBtn, setEmojiBtn] = useState(false);
+  const [modalState, setModalState] = useState(false);
+  const [file, setFileName] = useState(null);
 
   useEffect(() => {
     if (params.id) {
@@ -101,6 +108,7 @@ function Chat() {
         const fire = {};
         const heartCount = 0;
         const heart = {};
+        const postImg = null;
         const obj = {
           text: userNewMsg,
           timestamp: firebase.firestore.Timestamp.now(),
@@ -113,6 +121,7 @@ function Chat() {
           fire: fire,
           heartCount: heartCount,
           heart: heart,
+          postImg: postImg,
         };
 
         db.collection("channels")
@@ -130,8 +139,21 @@ function Chat() {
     setUserNewMsg(userNewMsg + e.native);
   };
 
+  const openModal = () => {
+    setModalState(!modalState);
+  };
+
+  const handelFileUpload = (e) => {
+    if (e.target.files[0]) {
+      setFileName(e.target.files[0]);
+      openModal();
+    }
+    e.target.value = null;
+  };
+
   return (
     <div className={classes.root}>
+      {modalState ? <FileUpload setState={openModal} file={file} /> : null}
       <Grid item xs={12} className={classes.roomName}>
         <BiHash className={classes.iconDesign} />
         <h3 className={classes.roomNameText}>{channelName}</h3>
@@ -149,6 +171,23 @@ function Chat() {
       </Grid>
       <div className={classes.footer}>
         <Grid item xs={12} className={classes.footerContent}>
+          <input
+            accept="image/*"
+            className={classes.inputFile}
+            id="icon-button-file"
+            type="file"
+            onChange={(e) => handelFileUpload(e)}
+          />
+          <label htmlFor="icon-button-file" style={{ paddingTop: "3px" }}>
+            <IconButton
+              color="primary"
+              aria-label="upload picture"
+              component="span"
+            >
+              <RiImageAddLine style={{ color: "#b9bbbe" }} />
+            </IconButton>
+          </label>
+
           <IconButton
             color="primary"
             component="button"

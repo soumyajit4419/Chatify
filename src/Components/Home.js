@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     textAlign: "center",
     padding: "20px",
+    alignItems: "center",
   },
   square: {
     height: "80px",

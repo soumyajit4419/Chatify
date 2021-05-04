@@ -10,6 +10,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { AiFillDelete } from "react-icons/ai";
 import { db } from "../Firebase/Firebase";
 import { useParams } from "react-router-dom";
+import DeleteModal from "./DeleteModal";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -92,6 +93,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Messages({ values, msgId }) {
   const [style, setStyle] = useState({ display: "none" });
+  const [deleteModal, setDeleteModal] = useState(false);
   const classes = useStyles();
 
   const uid = JSON.parse(localStorage.getItem("userDetails")).uid;
@@ -112,6 +114,8 @@ function Messages({ values, msgId }) {
   const userFire = values.fire[uid];
   const userHeart = values.heart[uid];
 
+  const postImg = values.postImg;
+
   const channelId = useParams().id;
 
   const selectedLike = userLiked
@@ -125,6 +129,10 @@ function Messages({ values, msgId }) {
   const selectedFire = userFire
     ? { color: "#ffc336", backgroundColor: "#545454" }
     : null;
+
+  const showDeleteModal = () => {
+    setDeleteModal(!deleteModal);
+  };
 
   const heartClick = () => {
     const messageDoc = db
@@ -325,6 +333,15 @@ function Messages({ values, msgId }) {
 
   return (
     <Grid item xs={12} className={classes.root}>
+      {deleteModal ? (
+        <DeleteModal
+          msgId={msgId}
+          text={values.text}
+          postImg={postImg}
+          deleteMsg={deleteMsg}
+          handleModal={showDeleteModal}
+        />
+      ) : null}
       <div
         className={classes.paper}
         onMouseEnter={(e) => {
@@ -348,6 +365,15 @@ function Messages({ values, msgId }) {
             <p className={classes.chatTimming}>{time}</p>
           </div>
           <div className={classes.chatText}>{values.text}</div>
+          <div style={{ paddingTop: "5px" }}>
+            {postImg ? (
+              <img
+                src={postImg}
+                alt="user"
+                style={{ height: "300px", width: "400px", borderRadius: "4px" }}
+              />
+            ) : null}
+          </div>
 
           <div style={{ paddingTop: "5px", display: "flex" }}>
             {numLikes > 0 ? (
@@ -422,7 +448,7 @@ function Messages({ values, msgId }) {
                 <IconButton
                   component="span"
                   style={{ padding: "4px" }}
-                  onClick={() => deleteMsg(msgId)}
+                  onClick={showDeleteModal}
                 >
                   <AiFillDelete
                     className={classes.emojiBtn}

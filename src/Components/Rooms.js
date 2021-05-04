@@ -14,6 +14,10 @@ import { db } from "../Firebase/Firebase";
 import { useHistory } from "react-router-dom";
 import { IoMdChatboxes } from "react-icons/io";
 import { BiHash } from "react-icons/bi";
+import CreateRoom from "./CreateRoom";
+import Fade from "@material-ui/core/Fade";
+import Snackbar from "@material-ui/core/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
 
 const useStyles = makeStyles((theme) => ({
   nested: {
@@ -32,7 +36,9 @@ function Rooms() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const [channelList, setChannelList] = useState([]);
+  const [showCreateRoom, setShowCreateRoom] = useState(false);
   const history = useHistory();
+  const [alert, setAlert] = useState(false);
 
   useEffect(() => {
     db.collection("channels")
@@ -55,15 +61,20 @@ function Rooms() {
     history.push(`/channel/${id}`);
   };
 
-  const addChannel = () => {
-    let cName = prompt("Enter New Channel Name");
+  const manageCreateRoomModal = () => {
+    setShowCreateRoom(!showCreateRoom);
+  };
+
+  const handleAlert = () => {
+    setAlert(!alert);
+  };
+
+  const addChannel = (cName) => {
     if (cName) {
       cName = cName.toLowerCase();
       for (var i = 0; i < channelList.length; i++) {
         if (cName === channelList[i].channelName) {
-          alert(
-            "Entered Channel Name Already Exits!! \n Please Enter A valid Name.."
-          );
+          handleAlert();
           return;
         }
       }
@@ -73,9 +84,31 @@ function Rooms() {
 
   return (
     <div>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={alert}
+        onClose={handleAlert}
+        TransitionComponent={Fade}
+        message="Room Name Already Exits!!"
+        key={Fade}
+        action={
+          <IconButton
+            aria-label="close"
+            color="inherit"
+            className={classes.close}
+            onClick={handleAlert}
+          >
+            <CloseIcon />
+          </IconButton>
+        }
+      />
+
+      {showCreateRoom ? (
+        <CreateRoom create={addChannel} manage={manageCreateRoomModal} />
+      ) : null}
       <ListItem style={{ paddingTop: 0, paddingBottom: 0 }}>
         <ListItemText primary="Create New Channel" />
-        <IconButton edge="end" aria-label="add" onClick={addChannel}>
+        <IconButton edge="end" aria-label="add" onClick={manageCreateRoomModal}>
           <AddIcon className={classes.primary} />
         </IconButton>
       </ListItem>

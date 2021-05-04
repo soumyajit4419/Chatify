@@ -10,6 +10,9 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import { storage } from "../Firebase/Firebase";
+import { useParams } from "react-router-dom";
+import firebase from "firebase/app";
+import { db } from "../Firebase/Firebase";
 
 const useStyles = makeStyles((theme) => ({
   displayImage: {
@@ -28,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function FileUpload({ setState, file }) {
+  const params = useParams();
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -37,6 +41,46 @@ function FileUpload({ setState, file }) {
   const handleClose = () => {
     setOpen(false);
     setState();
+  };
+
+  const sendMsg = (downloadURL) => {
+    if (params.id) {
+      const userData = JSON.parse(localStorage.getItem("userDetails"));
+
+      if (userData) {
+        const displayName = userData.displayName;
+        const imgUrl = userData.photoURL;
+        const uid = userData.uid;
+        const likeCount = 0;
+        const likes = {};
+        const fireCount = 0;
+        const fire = {};
+        const heartCount = 0;
+        const heart = {};
+        const postImg = downloadURL;
+        const obj = {
+          text: message,
+          timestamp: firebase.firestore.Timestamp.now(),
+          userImg: imgUrl,
+          userName: displayName,
+          uid: uid,
+          likeCount: likeCount,
+          likes: likes,
+          fireCount: fireCount,
+          fire: fire,
+          heartCount: heartCount,
+          heart: heart,
+          postImg: postImg,
+        };
+
+        db.collection("channels")
+          .doc(params.id)
+          .collection("messages")
+          .add(obj);
+      }
+
+      setMessage("");
+    }
   };
 
   const fileObj = URL.createObjectURL(file);
@@ -59,7 +103,7 @@ function FileUpload({ setState, file }) {
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         uploadRef.snapshot.ref.getDownloadURL().then((downloadURL) => {
-          console.log("File available at", downloadURL);
+          sendMsg(downloadURL);
         });
         handleClose();
       }

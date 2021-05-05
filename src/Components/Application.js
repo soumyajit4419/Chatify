@@ -183,7 +183,7 @@ function Application(props) {
       });
   };
 
-  const drawer = (
+  const drawer = userDetails && (
     <div>
       <Toolbar className={classes.sideToolBar}>
         <Typography variant="h6" className={classes.sideToolBarText}>

@@ -18,8 +18,13 @@ import { Grid } from "@material-ui/core";
 import { deepPurple } from "@material-ui/core/colors";
 import Rooms from "./Rooms";
 import { GoSignOut } from "react-icons/go";
-import { auth } from "../Firebase/Firebase";
+import { FaUserEdit } from "react-icons/fa";
+import { auth, db } from "../Firebase/Firebase";
 import { Link } from "react-router-dom";
+import EditProfile from "./EditProfile";
+import Fade from "@material-ui/core/Fade";
+import Snackbar from "@material-ui/core/Snackbar";
+import CloseIcon from "@material-ui/icons/Close";
 
 const drawerWidth = 240;
 
@@ -35,7 +40,6 @@ const StyledBadge = withStyles((theme) => ({
       width: "100%",
       height: "100%",
       borderRadius: "50%",
-      animation: "$ripple 1.2s infinite ease-in-out",
       border: "1px solid currentColor",
       content: '""',
     },
@@ -92,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
     },
-    backgroundColor: "#36393f",
+    backgroundColor: "#22273b",
     color: "#dcddde",
     boxShadow:
       "0 1px 0 rgba(4,4,5,0.2),0 1.5px 0 rgba(6,6,7,0.05),0 2px 0 rgba(4,4,5,0.05);",
@@ -107,11 +111,11 @@ const useStyles = makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
-    backgroundColor: "#2f3136",
+    backgroundColor: "#171c2e",
     color: "white",
   },
   sideToolBar: {
-    backgroundColor: "#2f3136",
+    backgroundColor: "#171c2e",
     color: "#fff",
     lineHeight: 1.6,
     boxShadow:
@@ -128,20 +132,24 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Application(props) {
-  const { window } = props;
+  const { window, uid } = props;
   const classes = useStyles();
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [userDetails, setUserDetails] = useState([]);
+  const [editProfileModal, setEditProfileModal] = useState(false);
+  const [alert, setAlert] = useState(false);
   const open = Boolean(anchorEl);
 
   useEffect(() => {
-    const details = JSON.parse(localStorage.getItem("userDetails"));
-    if (details) {
-      setUserDetails(details);
-    }
-  }, []);
+    db.collection("users")
+      .doc(uid)
+      .onSnapshot((doc) => {
+        setUserDetails(doc.data());
+        localStorage.setItem("userDetails", JSON.stringify(doc.data()));
+      });
+  }, [uid]);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -153,6 +161,14 @@ function Application(props) {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const toggleEditProfile = () => {
+    setEditProfileModal(!editProfileModal);
+  };
+
+  const handleAlert = () => {
+    setAlert(!alert);
   };
 
   const signOut = () => {
@@ -215,6 +231,25 @@ function Application(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
+
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={alert}
+        onClose={handleAlert}
+        TransitionComponent={Fade}
+        message="Display Name Updated Successfully"
+        key={Fade}
+        action={
+          <IconButton aria-label="close" color="inherit" onClick={handleAlert}>
+            <CloseIcon />
+          </IconButton>
+        }
+      />
+
+      {editProfileModal ? (
+        <EditProfile toggler={toggleEditProfile} alert={handleAlert} />
+      ) : null}
+
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar style={{ minHeight: "50px" }}>
           <IconButton
@@ -259,8 +294,11 @@ function Application(props) {
               open={open}
               onClose={handleClose}
             >
+              <MenuItem onClick={toggleEditProfile}>
+                <FaUserEdit /> &nbsp; Edit Profile
+              </MenuItem>
+
               <MenuItem onClick={signOut}>
-                {" "}
                 <GoSignOut /> &nbsp; Sign Out of Chatify
               </MenuItem>
             </Menu>

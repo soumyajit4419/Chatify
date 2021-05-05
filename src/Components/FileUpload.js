@@ -76,7 +76,13 @@ function FileUpload({ setState, file }) {
         db.collection("channels")
           .doc(params.id)
           .collection("messages")
-          .add(obj);
+          .add(obj)
+          .then((res) => {
+            console.log("message sent");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
 
       setMessage("");
@@ -85,7 +91,8 @@ function FileUpload({ setState, file }) {
 
   const fileObj = URL.createObjectURL(file);
 
-  const handleUpload = () => {
+  const handleUpload = (e) => {
+    e.preventDefault();
     setProgressBar({ display: "block" });
     const uploadRef = storage.ref(`images/${file.name}`).put(file);
     uploadRef.on(
@@ -126,14 +133,22 @@ function FileUpload({ setState, file }) {
         <DialogTitle id="alert-dialog-title">Upload Image</DialogTitle>
 
         <DialogContent>
-          <form autoComplete="off" onSubmit={handleUpload}>
+          <form
+            autoComplete="off"
+            onSubmit={(e) => {
+              handleUpload(e);
+            }}
+          >
             <TextField
               id="outlined-basic"
               label="Add A Message"
               fullWidth
               margin="normal"
               variant="outlined"
-              style={{ backgroundColor: "#484c52", borderRadius: "5px" }}
+              style={{
+                backgroundColor: "rgb(45, 45, 73)",
+                borderRadius: "5px",
+              }}
               onChange={(e) => {
                 setMessage(e.target.value);
               }}
@@ -157,7 +172,7 @@ function FileUpload({ setState, file }) {
           </Button>
           <Button
             type="submit"
-            onClick={handleUpload}
+            onClick={(e) => handleUpload(e)}
             color="primary"
             autoFocus
             variant="contained"

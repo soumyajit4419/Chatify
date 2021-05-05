@@ -43,7 +43,7 @@ function CreateRoom({ create, manage }) {
               variant="outlined"
               required
               value={roomName}
-              style={{ backgroundColor: "#484c52", borderRadius: "5px" }}
+              style={{ backgroundColor: "rgb(45 45 73)", borderRadius: "5px" }}
               onChange={(e) => {
                 setRoomName(e.target.value);
               }}

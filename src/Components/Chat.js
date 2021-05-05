@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
   chat: {
     position: "relative",
-    height: "calc(100vh - 180px)",
+    height: "calc(100vh - 200px)",
     paddingLeft: "10px",
     paddingBottom: "5px",
     paddingTop: "5px",
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   footer: {
     paddingRight: "15px",
     paddingLeft: "15px",
-    paddingTop: "5px",
+    paddingTop: "10px",
   },
   message: {
     width: "100%",
@@ -55,8 +55,9 @@ const useStyles = makeStyles((theme) => ({
   },
   footerContent: {
     display: "flex",
-    backgroundColor: "#40444b",
+    backgroundColor: "#303753",
     borderRadius: "5px",
+    alignItems: "center",
   },
   inputFile: {
     display: "none",
@@ -127,7 +128,13 @@ function Chat() {
         db.collection("channels")
           .doc(params.id)
           .collection("messages")
-          .add(obj);
+          .add(obj)
+          .then((res) => {
+            console.log("message sent");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
 
       setUserNewMsg("");
@@ -144,6 +151,7 @@ function Chat() {
   };
 
   const handelFileUpload = (e) => {
+    e.preventDefault();
     if (e.target.files[0]) {
       setFileName(e.target.files[0]);
       openModal();
@@ -178,7 +186,7 @@ function Chat() {
             type="file"
             onChange={(e) => handelFileUpload(e)}
           />
-          <label htmlFor="icon-button-file" style={{ paddingTop: "3px" }}>
+          <label htmlFor="icon-button-file">
             <IconButton
               color="primary"
               aria-label="upload picture"
@@ -208,6 +216,9 @@ function Chat() {
               id="outlined-basic"
               label="Enter Message"
               variant="outlined"
+              multiline
+              rows={1}
+              rowsMax={2}
               value={userNewMsg}
               onChange={(e) => {
                 setUserNewMsg(e.target.value);

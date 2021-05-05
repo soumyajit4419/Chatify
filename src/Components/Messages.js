@@ -11,6 +11,7 @@ import { AiFillDelete } from "react-icons/ai";
 import { db } from "../Firebase/Firebase";
 import { useParams } from "react-router-dom";
 import DeleteModal from "./DeleteModal";
+import { Anchorme } from "react-anchorme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: "10px",
     "&:hover": {
-      backgroundColor: "#33353b",
+      backgroundColor: "#1f2436",
     },
   },
   avatar: {
@@ -364,16 +365,26 @@ function Messages({ values, msgId }) {
             <h6 className={classes.chatHeading}>{values.userName}</h6>
             <p className={classes.chatTimming}>{time}</p>
           </div>
-          <div className={classes.chatText}>{values.text}</div>
-          <div style={{ paddingTop: "5px" }}>
+
+          <div className={classes.chatText}>
+            {values.text.split("\n").map((txt, idx) => (
+              <div key={idx}>
+                <Anchorme target="_blank" rel="noreferrer noopener">
+                  {txt}
+                </Anchorme>
+              </div>
+            ))}
+          </div>
+
+          <Grid item xs={12} md={12} style={{ paddingTop: "5px" }}>
             {postImg ? (
               <img
                 src={postImg}
                 alt="user"
-                style={{ height: "300px", width: "400px", borderRadius: "4px" }}
+                style={{ height: "30vh", width: "auto", borderRadius: "4px" }}
               />
             ) : null}
-          </div>
+          </Grid>
 
           <div style={{ paddingTop: "5px", display: "flex" }}>
             {numLikes > 0 ? (

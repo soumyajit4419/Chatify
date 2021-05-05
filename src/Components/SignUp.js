@@ -9,8 +9,8 @@ import { auth, provider } from "../Firebase/Firebase";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: "#23272a",
-    boxShadow: "0 0 15px rgb(0 0 0 / 58%)",
+    boxShadow: "0 0 15px rgb(7 15 63 / 33%)",
+    backgroundColor: "#171c30",
     color: "white",
   },
   paper: {

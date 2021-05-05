@@ -25,10 +25,10 @@ const useStyles = makeStyles((theme) => ({
   },
   iconDesign: {
     fontSize: "1.5em",
-    color: "#ff4c79",
+    color: "#cb43fc",
   },
   primary: {
-    color: "#ff4c79",
+    color: "#cb43fc",
   },
 }));
 
@@ -78,7 +78,15 @@ function Rooms() {
           return;
         }
       }
-      db.collection("channels").add({ channelName: cName.toLowerCase() });
+
+      db.collection("channels")
+        .add({ channelName: cName.toLowerCase() })
+        .then((res) => {
+          console.log("added new channel");
+        })
+        .then((err) => {
+          console.log(err);
+        });
     }
   };
 
@@ -92,12 +100,7 @@ function Rooms() {
         message="Room Name Already Exits!!"
         key={Fade}
         action={
-          <IconButton
-            aria-label="close"
-            color="inherit"
-            className={classes.close}
-            onClick={handleAlert}
-          >
+          <IconButton aria-label="close" color="inherit" onClick={handleAlert}>
             <CloseIcon />
           </IconButton>
         }

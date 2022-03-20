@@ -71,7 +71,12 @@ function Rooms() {
 
   const addChannel = (cName) => {
     if (cName) {
-      cName = cName.toLowerCase();
+      cName = cName.toLowerCase().trim();
+      if (cName === "") {
+        handleAlert();
+        return;
+      }
+
       for (var i = 0; i < channelList.length; i++) {
         if (cName === channelList[i].channelName) {
           handleAlert();
@@ -146,7 +151,11 @@ function Rooms() {
                   />
                 </ListItemIcon>
                 <ListItemText
-                  primary={channel.channelName}
+                  primary={
+                    channel.channelName === channel.channelName.substr(0, 12)
+                      ? channel.channelName
+                      : `${channel.channelName.substr(0, 12)}...`
+                  }
                   style={{ color: "#dcddde" }}
                 />
               </ListItem>

@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
     paddingLeft: "1rem",
     width: "calc(100% - 50px)",
+    wordBreak: "break-all",
   },
   chatHeading: {
     marginBlockStart: 0,
